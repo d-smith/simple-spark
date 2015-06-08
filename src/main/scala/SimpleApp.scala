@@ -4,13 +4,37 @@ import org.apache.spark.SparkConf
 
 object SimpleApp {
 	def main(args: Array[String]) {
-		val logFile = "README.md" // Should be some file on your system
+		val warAndPeace = "war_and_peace.txt" // Should be some file on your system
+
+
+		//Spark setup
 		val conf = new SparkConf().setAppName("Simple Application").setMaster("local[2]")
 		val sc = new SparkContext(conf)
-		val logData = sc.textFile(logFile, 2).cache()
-		val numAs = logData.filter(line => line.contains("a")).count()
-		val numBs = logData.filter(line => line.contains("b")).count()
-		println("===========\nLines with a: %s, Lines with b: %s".format(numAs, numBs))
-		sc.stop()
+
+
+		try {
+			//Read war and peace
+			val input = sc.textFile(warAndPeace)
+
+			val wc = input
+						.map(_.toLowerCase)
+						.flatMap(_.split("""\W+"""))
+						.countByValue()
+
+
+			val outpath = "word-count-out"
+			println("Writing ${wc.size} records to output")
+
+			val out = new java.io.PrintWriter(outpath)
+			wc foreach {
+				case (word,count) =>
+					out.println("%20s\t%d".format(word,count))
+			}
+			out.close()
+			
+		} finally {
+			sc.stop()
+		}
+		
 	}
 }
