@@ -14,23 +14,20 @@ object SimpleApp {
 
 		try {
 			//Read war and peace
-			val input = sc.textFile(warAndPeace)
+			val input = sc.textFile(warAndPeace).map(_.toLowerCase)
 
 			val wc = input
-						.map(_.toLowerCase)
 						.flatMap(_.split("""\W+"""))
-						.countByValue()
+						.map(word => (word,1))
+						.reduceByKey((_+_))
+						.keyBy(t => t._2)
+						.sortByKey(false)
 
 
 			val outpath = "word-count-out"
 			println("Writing ${wc.size} records to output")
 
-			val out = new java.io.PrintWriter(outpath)
-			wc foreach {
-				case (word,count) =>
-					out.println("%20s\t%d".format(word,count))
-			}
-			out.close()
+			wc.saveAsTextFile(outpath)
 			
 		} finally {
 			sc.stop()
