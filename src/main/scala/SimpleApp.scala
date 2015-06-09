@@ -22,6 +22,7 @@ object SimpleApp {
 						.reduceByKey((_+_))
 						.keyBy(t => t._2)
 						.sortByKey(false)
+						.map(_._2)
 
 
 			val outpath = "word-count-out"
