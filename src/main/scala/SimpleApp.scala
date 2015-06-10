@@ -24,6 +24,8 @@ object SimpleApp {
 						.sortByKey(false)
 						.map(_._2)
 
+			val thing = wc.collect().take(20) foreach println
+
 
 			val outpath = "word-count-out"
 			println("Writing ${wc.size} records to output")
