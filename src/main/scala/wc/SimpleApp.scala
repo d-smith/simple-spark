@@ -1,6 +1,9 @@
+package wc
+
 import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
+import util.Timestamp
 
 object SimpleApp {
 	def main(args: Array[String]) {
@@ -27,7 +30,8 @@ object SimpleApp {
 			val thing = wc.collect().take(20) foreach println
 
 
-			val outpath = "word-count-out"
+			val now = Timestamp.now()
+      		val outpath = s"outpath-$now"
 			println("Writing ${wc.size} records to output")
 
 			wc.saveAsTextFile(outpath)
